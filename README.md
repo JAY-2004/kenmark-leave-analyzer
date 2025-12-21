@@ -26,7 +26,6 @@ The system follows predefined business rules for working hours, leave policy, an
 
 ### Productivity Calculation
 - Productivity = (Actual Worked Hours / Expected Working Hours) × 100
-- Worked hours are capped to expected hours to avoid inflated productivity.
 
 ### Dashboard & Monthly Analysis
 - Overall summary per employee:
@@ -99,7 +98,7 @@ A sample Excel file is provided for testing:
 
 The sample file includes:
 - Three employees
-- Multiple months (January and February 2024)
+- Multiple months (January, February and March 2024)
 - Weekdays, Saturdays, Sundays, and leave scenarios
 
 ---
