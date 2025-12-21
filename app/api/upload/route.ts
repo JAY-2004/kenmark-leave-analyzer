@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import * as XLSX from "xlsx";
 
-/* =========================
-   Helpers
-========================= */
 
 function excelDateToJSDate(excelDate: number): string {
   const jsDate = new Date((excelDate - 25569) * 86400 * 1000);
@@ -32,10 +29,6 @@ function getExpectedHours(dateStr: string): number {
   return 8.5;
 }
 
-/* =========================
-   POST API
-========================= */
-
 export async function POST(request: Request) {
   const formData = await request.formData();
   const file = formData.get("file");
@@ -50,9 +43,6 @@ export async function POST(request: Request) {
   const worksheet = workbook.Sheets[workbook.SheetNames[0]];
   const rawRows: any[] = XLSX.utils.sheet_to_json(worksheet);
 
-  /* =========================
-     Normalize Daily Records
-  ========================= */
 
   const dailyRecords = rawRows.map((row: any) => {
     const employeeName = String(
@@ -91,17 +81,11 @@ export async function POST(request: Request) {
     };
   });
 
-  /* =========================
-     Available Months
-  ========================= */
 
   const availableMonths = Array.from(
     new Set(dailyRecords.map((r) => r.date.slice(0, 7)))
   ).sort();
 
-  /* =========================
-     Overall Aggregation
-  ========================= */
 
   function aggregate(records: any[]) {
     const report: any = {};
