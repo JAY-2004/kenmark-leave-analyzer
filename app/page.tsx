@@ -5,7 +5,6 @@ import { useState } from "react";
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
 
-  // NEW: separate selected vs applied month
   const [selectedMonth, setSelectedMonth] = useState("");
   const [appliedMonth, setAppliedMonth] = useState("");
 
@@ -31,8 +30,6 @@ export default function Home() {
 
     const result = await res.json();
     setData(result);
-
-    // Apply month ONLY after analyze
     setAppliedMonth(selectedMonth);
 
     setLoading(false);
@@ -102,8 +99,7 @@ export default function Home() {
           {/* Monthly Summary */}
           <div className="bg-white p-6 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">
-              Monthly Summary{" "}
-              {appliedMonth && `(${appliedMonth})`}
+              Monthly Summary {appliedMonth && `(${appliedMonth})`}
             </h2>
 
             {!appliedMonth && (
@@ -112,17 +108,15 @@ export default function Home() {
               </p>
             )}
 
-            {appliedMonth &&
-              data?.monthlyEmployees?.length > 0 && (
-                <EmployeeCards employees={data.monthlyEmployees} />
-              )}
+            {appliedMonth && data?.monthlyEmployees?.length > 0 && (
+              <EmployeeCards employees={data.monthlyEmployees} showDaily />
+            )}
 
-            {appliedMonth &&
-              data?.monthlyEmployees?.length === 0 && (
-                <p className="text-red-600">
-                  No data available for selected month.
-                </p>
-              )}
+            {appliedMonth && data?.monthlyEmployees?.length === 0 && (
+              <p className="text-red-600">
+                No data available for selected month.
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -130,21 +124,49 @@ export default function Home() {
   );
 }
 
-function EmployeeCards({ employees }: any) {
+function EmployeeCards({ employees, showDaily = false }: any) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {employees.map((emp: any) => (
-        <div
-          key={emp.employeeName}
-          className="border rounded p-4"
-        >
-          <h3 className="font-semibold mb-2">
-            {emp.employeeName}
-          </h3>
+        <div key={emp.employeeName} className="border rounded p-4">
+          <h3 className="font-semibold mb-2">{emp.employeeName}</h3>
+
           <p>Total Expected: {emp.totalExpectedHours}</p>
           <p>Total Worked: {emp.totalWorkedHours}</p>
           <p>Leaves Used: {emp.leavesUsed} / 2</p>
           <p>Productivity: {emp.productivity}%</p>
+
+          {/* DAILY BREAKDOWN */}
+          {showDaily && (
+            <div className="mt-4">
+              <h4 className="font-medium mb-2">Daily Breakdown</h4>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="border px-2 py-1">Date</th>
+                      <th className="border px-2 py-1">Worked</th>
+                      <th className="border px-2 py-1">Expected</th>
+                      <th className="border px-2 py-1">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {emp.dailyBreakdown.map((day: any, index: number) => (
+                      <tr key={index}>
+                        <td className="border px-2 py-1">{day.date}</td>
+                        <td className="border px-2 py-1">{day.workedHours}</td>
+                        <td className="border px-2 py-1">{day.expectedHours}</td>
+                        <td className="border px-2 py-1">
+                          {day.isLeave ? "Leave" : "Present"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       ))}
     </div>
