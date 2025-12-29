@@ -90,13 +90,13 @@ export default function Home() {
       {data?.overallEmployees && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 max-w-6xl mx-auto">
           
-          {/* Overall Summary */}
+          {/* OVERALL SUMMARY (WITH DAILY BREAKDOWN) */}
           <div className="bg-white p-6 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">Overall Summary</h2>
-            <EmployeeCards employees={data.overallEmployees} />
+            <EmployeeCards employees={data.overallEmployees} showDaily />
           </div>
 
-          {/* Monthly Summary */}
+          {/* MONTHLY SUMMARY (NO DAILY BREAKDOWN) */}
           <div className="bg-white p-6 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">
               Monthly Summary {appliedMonth && `(${appliedMonth})`}
@@ -109,7 +109,7 @@ export default function Home() {
             )}
 
             {appliedMonth && data?.monthlyEmployees?.length > 0 && (
-              <EmployeeCards employees={data.monthlyEmployees} showDaily />
+              <EmployeeCards employees={data.monthlyEmployees} />
             )}
 
             {appliedMonth && data?.monthlyEmployees?.length === 0 && (
@@ -136,8 +136,8 @@ function EmployeeCards({ employees, showDaily = false }: any) {
           <p>Leaves Used: {emp.leavesUsed} / 2</p>
           <p>Productivity: {emp.productivity}%</p>
 
-          {/* DAILY BREAKDOWN */}
-          {showDaily && (
+          {/* DAILY BREAKDOWN — ONLY IN OVERALL SUMMARY */}
+          {showDaily && emp.dailyBreakdown && (
             <div className="mt-4">
               <h4 className="font-medium mb-2">Daily Breakdown</h4>
 
